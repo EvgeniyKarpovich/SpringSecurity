@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/api/auth/")
-public class AuthenticationRestController {
+public class AuthenticationController {
 
     @Autowired
     private  AuthenticationManager authenticationManager;

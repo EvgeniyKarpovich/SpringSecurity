@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserRegistryDto {
 
     @ApiModelProperty(value = "id", example = "1", position = 1)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -23,16 +23,21 @@ public class UserDto {
     @NotBlank(message = "Enter Name")
     private String username;
 
-    @ApiModelProperty(value = "FirstName", example = "", required = true, position = 3)
+    @ApiModelProperty(value = "Password", example = "", required = true, position = 3)
+    @NotBlank(message = "Enter password")
+    private String password;
+
+    @ApiModelProperty(value = "FirstName", example = "", required = true, position = 5)
     @NotBlank(message = "Enter firstName")
     private String firstName;
 
-    @ApiModelProperty(value = "LastName", example = "", required = true, position = 4)
+    @ApiModelProperty(value = "LastName", example = "", required = true, position = 6)
     @NotBlank(message = "Enter lastName")
     private String lastName;
 
-
-    @ApiModelProperty(value = "Email", example = "", required = true, position = 5)
+    @ApiModelProperty(value = "Email", example = "", required = true, position = 7)
     @NotBlank(message = "Enter email")
     private String email;
+
 }
+

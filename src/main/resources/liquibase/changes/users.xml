@@ -17,7 +17,7 @@
             status varchar(30) NOT NULL,
             date_of_creation timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             date_of_change timestamp WITH time ZONE DEFAULT CURRENT_DATE,
-            CONSTRAINT ct_user UNIQUE(username)
+            CONSTRAINT ct_user UNIQUE(email)
             );
         </sql>
     </changeSet>

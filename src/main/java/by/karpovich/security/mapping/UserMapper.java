@@ -15,9 +15,9 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateOfCreation", ignore = true)
     @Mapping(target = "dateOfChange", ignore = true)
-    @Mapping(target = "password", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User mapFromDto(UserDto dto);
 
     UserDto mapFromEntity(User model);
