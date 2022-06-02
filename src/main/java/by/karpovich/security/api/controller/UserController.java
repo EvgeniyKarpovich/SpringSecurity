@@ -25,6 +25,7 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> findById(@PathVariable(name = "id") Long id) {
         UserDto user = userService.findById(id);
+
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -47,6 +48,7 @@ public class UserController {
     @PostMapping(value = "/registration")
     public ResponseEntity<?> registration(@RequestBody @Valid UserRegistryDto dto) {
         User registration = userService.registration(dto);
+
         if (registration == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

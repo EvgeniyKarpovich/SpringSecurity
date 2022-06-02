@@ -56,12 +56,6 @@ public class UserService {
         return registeredUser;
     }
 
-//    public User findByUsername(String username) {
-//        User result = userRepository.findByUsername(username);
-//        log.info("IN findByUsername - user: {} found by username: {}", result, username);
-//        return result;
-//    }
-
     public UserDto findById(Long id) {
         Optional<User> userDto = userRepository.findById(id);
         User userModel = userDto.orElseThrow(
@@ -76,7 +70,6 @@ public class UserService {
         } else {
             throw new EntityNotFoundException(String.format("User with id = %s not found", id));
         }
-
     }
 
     public User findByLogin(String login) {

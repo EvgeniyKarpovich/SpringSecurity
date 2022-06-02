@@ -19,14 +19,14 @@ public class SwaggerConfiguration {
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("by.karpovich"))
+                .apis(RequestHandlerSelectors.basePackage("by.karpovich.security"))
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("FILMS Service")
-                .description("Project Film Service")
+                .title("Spring Security")
+                .description("security")
                 .build();
     }
 }
