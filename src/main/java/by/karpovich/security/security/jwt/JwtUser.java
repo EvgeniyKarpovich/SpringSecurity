@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtUser implements UserDetails {
 
     private final Long id;
-    private final String username;
+    private final String login;
     private final String firstName;
     private final String lastName;
     private final String password;
@@ -21,7 +21,7 @@ public class JwtUser implements UserDetails {
 
     public JwtUser(
             Long id,
-            String username,
+            String login,
             String firstName,
             String lastName,
             String email,
@@ -29,7 +29,7 @@ public class JwtUser implements UserDetails {
             boolean enabled
     ) {
         this.id = id;
-        this.username = username;
+        this.login = login;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -45,7 +45,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return login;
     }
 
     @JsonIgnore

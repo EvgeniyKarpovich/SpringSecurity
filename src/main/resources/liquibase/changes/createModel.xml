@@ -17,7 +17,7 @@
 
     <changeSet id="model-users-1" author="karpovich.e">
         <sql>
-            INSERT INTO USERS (username, first_name, last_name, email, password, status)
+            INSERT INTO USERS (login, first_name, last_name, email, password, status)
             VALUES ('Geka', 'Evgemiy', 'Karpovich', 'Phoenix-zzz@mail.ru',
             '$2a$12$qbv4T9UD739SpybOnajp0uMAK327pY0o3jetJKEhdQpMfZP6HJ9ea', 'ACTIVE'),
             ('Petr', 'Petrov', 'Petro', 'Petro@mail.ru','$2a$12$qbv4T9UD739SpybOnajp0uMAK327pY0o3jetJKEhdQpMfZP6HJ9ea',

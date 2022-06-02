@@ -26,27 +26,27 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationController {
 
     @Autowired
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     @Autowired
-    private  JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
     @Autowired
-    private  UserService userService;
+    private UserService userService;
 
     @PostMapping("login")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String username = requestDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = userService.findByUsername(username);
+            String login = requestDto.getLogin();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
+            User user = userService.findByLogin(login);
 
             if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + username + " not found");
+                throw new UsernameNotFoundException("User with username: " + login + " not found");
             }
 
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
+            String token = jwtTokenProvider.createToken(login, user.getRoles());
 
             AuthenticationResponseDto response = new AuthenticationResponseDto();
-            response.setUsername(username);
+            response.setLogin(login);
             response.setToken(token);
 
             return ResponseEntity.ok(response);

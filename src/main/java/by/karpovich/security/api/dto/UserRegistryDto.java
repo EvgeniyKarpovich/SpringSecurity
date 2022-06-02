@@ -21,7 +21,7 @@ public class UserRegistryDto {
 
     @ApiModelProperty(value = "Name", example = "", required = true, position = 2)
     @NotBlank(message = "Enter Name")
-    private String username;
+    private String login;
 
     @ApiModelProperty(value = "Password", example = "", required = true, position = 3)
     @NotBlank(message = "Enter password")

@@ -43,7 +43,7 @@ public class UserService {
 
         validateAlreadyExistsRegistry(null, dto);
         User user = new User();
-        user.setUsername(dto.getUsername());
+        user.setLogin(dto.getLogin());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setStatus(Status.ACTIVE);
         user.setFirstName(dto.getFirstName());
@@ -56,11 +56,11 @@ public class UserService {
         return registeredUser;
     }
 
-    public User findByUsername(String username) {
-        User result = userRepository.findByUsername(username);
-        log.info("IN findByUsername - user: {} found by username: {}", result, username);
-        return result;
-    }
+//    public User findByUsername(String username) {
+//        User result = userRepository.findByUsername(username);
+//        log.info("IN findByUsername - user: {} found by username: {}", result, username);
+//        return result;
+//    }
 
     public UserDto findById(Long id) {
         Optional<User> userDto = userRepository.findById(id);
@@ -79,11 +79,11 @@ public class UserService {
 
     }
 
-//    public User findByLogin(String login) {
-//        User model = userRepository.findByLogin(login);
-//        log.info("IN findByLogin -  User with login = {} found", model.getId());
-//        return model;
-//    }
+    public User findByLogin(String login) {
+        User model = userRepository.findByLogin(login);
+        log.info("IN findByLogin -  User with login = {} found", model.getId());
+        return model;
+    }
 
     public UserDto save(UserDto userDto) {
         validateAlreadyExists(null, userDto);

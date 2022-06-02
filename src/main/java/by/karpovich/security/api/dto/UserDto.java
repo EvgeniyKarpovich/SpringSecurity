@@ -21,7 +21,7 @@ public class UserDto {
 
     @ApiModelProperty(value = "Name", example = "", required = true, position = 2)
     @NotBlank(message = "Enter Name")
-    private String username;
+    private String login;
 
     @ApiModelProperty(value = "FirstName", example = "", required = true, position = 3)
     @NotBlank(message = "Enter firstName")
