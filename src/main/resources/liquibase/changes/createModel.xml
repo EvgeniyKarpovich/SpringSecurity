@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="model_role-1" author="karpovich.e">
+        <sql>
+            INSERT INTO ROLES (name, status)
+            VALUES
+            ('ROLE_ADMIN', 'ACTIVE'),
+            ('ROLE_USER', 'ACTIVE'),
+            ('ROLE_MANAGER', 'ACTIVE');
+        </sql>
+    </changeSet>
+
+    <changeSet id="model-users-1" author="karpovich.e">
+        <sql>
+            INSERT INTO USERS (username, first_name, last_name, email, password, status)
+            VALUES ('Geka', 'Evgemiy', 'Karpovich', 'Phoenix-zzz@mail.ru',
+            '$2a$12$qbv4T9UD739SpybOnajp0uMAK327pY0o3jetJKEhdQpMfZP6HJ9ea', 'ACTIVE'),
+            ('Petr', 'Petrov', 'Petro', 'Petro@mail.ru','$2a$12$qbv4T9UD739SpybOnajp0uMAK327pY0o3jetJKEhdQpMfZP6HJ9ea',
+            'ACTIVE'),
+            ('Vasya', 'Vasilev', 'Vasek', 'Vasya@mail.ru',
+            '$2a$12$qbv4T9UD739SpybOnajp0uMAK327pY0o3jetJKEhdQpMfZP6HJ9ea', 'ACTIVE')
+        </sql>
+    </changeSet>
+
+    <changeSet id="model-us_rol-1" author="karpovich.e">
+        <sql>
+            INSERT INTO USER_ROLES (user_id, role_id)
+            VALUES ('1', '1'),
+            ('2', '2'),
+            ('3', '2')
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
