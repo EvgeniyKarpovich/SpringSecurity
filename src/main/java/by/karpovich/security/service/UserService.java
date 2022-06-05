@@ -10,13 +10,17 @@ import by.karpovich.security.jpa.model.User;
 import by.karpovich.security.jpa.repository.RoleRepository;
 import by.karpovich.security.jpa.repository.UserRepository;
 import by.karpovich.security.mapping.UserMapper;
+import by.karpovich.security.utils.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +80,40 @@ public class UserService {
         User model = userRepository.findByLogin(login);
         log.info("IN findByLogin -  User with login = {} found", model.getId());
         return model;
+    }
+
+    public UserRegistryDto saveWithAvatar(UserRegistryDto dto, MultipartFile multipartFile) throws IOException {
+        Role roleUser = roleRepository.findByName("ROLE_USER");
+        List<Role> userRoles = new ArrayList<>();
+        userRoles.add(roleUser);
+
+        validateAlreadyExistsRegistry(null, dto);
+
+        User model = new User();
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+        model.setLogin(dto.getLogin());
+        model.setPassword(passwordEncoder.encode(dto.getPassword()));
+        model.setStatus(Status.ACTIVE);
+        model.setFirstName(dto.getFirstName());
+        model.setLastName(dto.getLastName());
+        model.setEmail(dto.getEmail());
+        model.setRoles(userRoles);
+        model.setAvatar(fileName);
+
+        User saved = userRepository.save(model);
+
+        String uploadDir = "D:\\testImage\\" + saved.getId();
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+        UserRegistryDto responseDto = new UserRegistryDto();
+        responseDto.setLogin(saved.getLogin());
+        responseDto.setFirstName(saved.getFirstName());
+        responseDto.setLastName(saved.getLastName());
+        responseDto.setEmail(saved.getEmail());
+        responseDto.setAvatar(saved.getAvatar());
+
+        return  responseDto;
     }
 
     public UserDto save(UserDto userDto) {

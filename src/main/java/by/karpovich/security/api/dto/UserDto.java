@@ -35,4 +35,5 @@ public class UserDto {
     @ApiModelProperty(value = "Email", example = "", required = true, position = 5)
     @NotBlank(message = "Enter email")
     private String email;
+
 }

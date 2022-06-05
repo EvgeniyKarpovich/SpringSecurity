@@ -15,6 +15,7 @@
             email varchar(30) NOT NULL,
             password varchar(100) NOT NULL,
             status varchar(30) NOT NULL,
+            avatar varchar(64),
             date_of_creation timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             date_of_change timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             CONSTRAINT ct_user UNIQUE(email)

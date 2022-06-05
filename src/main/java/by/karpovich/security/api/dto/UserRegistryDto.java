@@ -39,5 +39,8 @@ public class UserRegistryDto {
     @NotBlank(message = "Enter email")
     private String email;
 
+    @ApiModelProperty(value = "Avatar", example = "", position = 6)
+    private String avatar;
+
 }
 

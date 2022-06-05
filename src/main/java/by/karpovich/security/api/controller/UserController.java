@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/save")
+    public ResponseEntity<?> saveUserWithAvatar(UserRegistryDto dto,
+                                                @RequestParam("avatar") MultipartFile multipartFile)  {
+        String message = "";
+
+        try {
+            UserRegistryDto userRegistryDto = userService.saveWithAvatar(dto, multipartFile);
+            return new ResponseEntity<>(userRegistryDto, HttpStatus.OK);
+        } catch (IOException e) {
+            message = "Uset not saved";
+            return new ResponseEntity<>("User no saved", HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> findById(@PathVariable(name = "id") Long id) {
         UserDto user = userService.findById(id);
@@ -29,7 +45,6 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -40,7 +55,6 @@ public class UserController {
         if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -52,7 +66,6 @@ public class UserController {
         if (registration == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity<>("User saved successfully", HttpStatus.OK);
     }
 
@@ -62,7 +75,7 @@ public class UserController {
                        @PathVariable("id") Long id) {
         UserDto update = userService.update(id, dto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(update,HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete by id user")
