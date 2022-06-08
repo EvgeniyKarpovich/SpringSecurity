@@ -39,5 +39,6 @@ public class UserRegistryDto {
     @NotBlank(message = "Enter email")
     private String email;
 
+    private String avatar;
 }
 

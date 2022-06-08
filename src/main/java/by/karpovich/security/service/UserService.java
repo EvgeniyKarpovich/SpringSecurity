@@ -36,6 +36,26 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+//    public User registration(UserRegistryDto dto) {
+//        Role roleUser = roleRepository.findByName("ROLE_USER");
+//        List<Role> userRoles = new ArrayList<>();
+//        userRoles.add(roleUser);
+//
+//        validateAlreadyExistsRegistry(null, dto);
+//        User user = new User();
+//        user.setLogin(dto.getLogin());
+//        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+//        user.setStatus(Status.ACTIVE);
+//        user.setFirstName(dto.getFirstName());
+//        user.setLastName(dto.getLastName());
+//        user.setEmail(dto.getEmail());
+//        user.setRoles(userRoles);
+//
+//        User registeredUser = userRepository.save(user);
+//        log.info("IN registration - user: {} successfully registered", registeredUser);
+//        return registeredUser;
+//    }
+
     public User registration(UserRegistryDto dto) {
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
@@ -50,11 +70,13 @@ public class UserService {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setRoles(userRoles);
+        user.setAvatar(dto.getAvatar());
 
         User registeredUser = userRepository.save(user);
         log.info("IN registration - user: {} successfully registered", registeredUser);
         return registeredUser;
     }
+
 
     public UserDto findById(Long id) {
         Optional<User> userDto = userRepository.findById(id);
