@@ -35,5 +35,6 @@ public class UserDto {
     @NotBlank(message = "Enter email")
     private String email;
 
+    @ApiModelProperty(value = "avatar", example = "", position = 6)
     private String avatar;
 }

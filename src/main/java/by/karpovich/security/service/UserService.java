@@ -10,17 +10,18 @@ import by.karpovich.security.jpa.model.User;
 import by.karpovich.security.jpa.repository.RoleRepository;
 import by.karpovich.security.jpa.repository.UserRepository;
 import by.karpovich.security.mapping.UserMapper;
+import by.karpovich.security.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -35,31 +36,21 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
+    @Value("${upload.path}")
+    private String uploadPath;
 
-//    public User registration(UserRegistryDto dto) {
-//        Role roleUser = roleRepository.findByName("ROLE_USER");
-//        List<Role> userRoles = new ArrayList<>();
-//        userRoles.add(roleUser);
-//
-//        validateAlreadyExistsRegistry(null, dto);
-//        User user = new User();
-//        user.setLogin(dto.getLogin());
-//        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        user.setStatus(Status.ACTIVE);
-//        user.setFirstName(dto.getFirstName());
-//        user.setLastName(dto.getLastName());
-//        user.setEmail(dto.getEmail());
-//        user.setRoles(userRoles);
-//
-//        User registeredUser = userRepository.save(user);
-//        log.info("IN registration - user: {} successfully registered", registeredUser);
-//        return registeredUser;
-//    }
+    public void registration(UserRegistryDto dto, MultipartFile file) {
 
-    public User registration(UserRegistryDto dto) {
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
+
+        String resultFileName = "";
+
+        if (file != null && !file.isEmpty()) {
+            String uuidFile = UUID.randomUUID().toString();
+            resultFileName = uuidFile + "." + file.getOriginalFilename();
+        }
 
         validateAlreadyExistsRegistry(null, dto);
         User user = new User();
@@ -70,17 +61,65 @@ public class UserService {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setRoles(userRoles);
-        user.setAvatar(dto.getAvatar());
+        user.setAvatar(resultFileName);
 
         User registeredUser = userRepository.save(user);
+
+        String uploadDir = uploadPath;
+
+        try {
+            FileUploadUtil.saveFile(uploadDir, resultFileName, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         log.info("IN registration - user: {} successfully registered", registeredUser);
-        return registeredUser;
     }
 
+    public void update(Long id, UserRegistryDto dto) {
+        validateAlreadyExistsRegistry(id, dto);
+
+        User user = new User();
+        user.setId(id);
+        user.setLogin(dto.getLogin());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setStatus(Status.ACTIVE);
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+
+        User registeredUser = userRepository.save(user);
+
+        log.info("IN update -  User  '{}' , updated", registeredUser);
+    }
+
+    public void updateAvatar(Long id, MultipartFile file) {
+        Optional<User> userOptional = userRepository.findById(id);
+        User user = userOptional.orElseThrow(
+                () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
+        String resultFileName = "";
+
+        if (file != null && !file.isEmpty()) {
+            String uuidFile = UUID.randomUUID().toString();
+            resultFileName = uuidFile + "." + file.getOriginalFilename();
+        }
+
+        user.setId(id);
+        user.setAvatar(resultFileName);
+        userRepository.save(user);
+
+        String uploadDir = uploadPath;
+
+        try {
+            FileUploadUtil.saveFile(uploadDir, resultFileName, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public UserDto findById(Long id) {
-        Optional<User> userDto = userRepository.findById(id);
-        User userModel = userDto.orElseThrow(
+        Optional<User> user = userRepository.findById(id);
+        User userModel = user.orElseThrow(
                 () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
         log.info("IN findById -  User with id = {} found", userModel.getId());
         return userMapper.mapFromEntity(userModel);
@@ -98,23 +137,6 @@ public class UserService {
         User model = userRepository.findByLogin(login);
         log.info("IN findByLogin -  User with login = {} found", model.getId());
         return model;
-    }
-
-    public UserDto save(UserDto userDto) {
-        validateAlreadyExists(null, userDto);
-        User userModel = userMapper.mapFromDto(userDto);
-        User user = userRepository.save(userModel);
-        log.info("IN save -  User with name  '{}' saved", userDto.getFirstName());
-        return userMapper.mapFromEntity(user);
-    }
-
-    public UserDto update(Long id, UserDto userDto) {
-        validateAlreadyExists(id, userDto);
-        User user = userMapper.mapFromDto(userDto);
-        user.setId(id);
-        User userModel = userRepository.save(user);
-        log.info("IN update -  User  '{}' , updated", userDto.getFirstName());
-        return userMapper.mapFromEntity(userModel);
     }
 
     public List<UserDto> findAll() {
