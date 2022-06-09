@@ -21,7 +21,7 @@ public class MvcConfig implements WebMvcConfigurer {
         //перенаправление с урла в директорию на сервере
         registry.addResourceHandler("/avatars/**")
                 .addResourceLocations("file://" + uploadPath + "/");
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+//        registry.addResourceHandler("/static/**")
+//                .addResourceLocations("classpath:/static/");
     }
 }

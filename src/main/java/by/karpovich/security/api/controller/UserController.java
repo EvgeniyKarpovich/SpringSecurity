@@ -2,6 +2,7 @@ package by.karpovich.security.api.controller;
 
 import by.karpovich.security.api.dto.UserDto;
 import by.karpovich.security.api.dto.UserRegistryDto;
+import by.karpovich.security.jpa.model.User;
 import by.karpovich.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,13 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> findById(@PathVariable(name = "id") Long id) {
         UserDto dto = userService.findById(id);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/full/{id}")
+    public ResponseEntity<User> findB(@PathVariable(name = "id") Long id) {
+        User dto = userService.getFullUser(id);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

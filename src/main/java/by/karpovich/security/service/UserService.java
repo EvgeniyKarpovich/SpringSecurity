@@ -134,9 +134,11 @@ public class UserService {
     }
 
     public User findByLogin(String login) {
-        User model = userRepository.findByLogin(login);
-        log.info("IN findByLogin -  User with login = {} found", model.getId());
-        return model;
+       Optional<User> model = userRepository.findByLogin(login);
+        User userModel = model.orElseThrow(
+                () -> new NotFoundModelException(String.format("User with login = %s not found", login)));
+        log.info("IN findByLogin -  User with login = {} found", userModel.getLogin());
+        return userModel;
     }
 
     public List<UserDto> findAll() {
@@ -146,14 +148,23 @@ public class UserService {
     }
 
     private void validateAlreadyExists(Long id, UserDto dto) {
-        Optional<User> check = userRepository.findByEmail(dto.getEmail());
+        Optional<User> check = userRepository.findByLogin(dto.getLogin());
         if (check.isPresent() && !Objects.equals(check.get().getId(), id)) {
             throw new DuplicateException(String.format("User with id = %s already exist", id));
         }
     }
 
+    public User getFullUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        User userModel = user.orElseThrow(
+                () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
+        log.info("IN findById -  User with id = {} found", userModel.getId());
+
+        return userModel;
+    }
+
     private void validateAlreadyExistsRegistry(Long id, UserRegistryDto dto) {
-        Optional<User> check = userRepository.findByEmail(dto.getEmail());
+        Optional<User> check = userRepository.findByLogin(dto.getLogin());
         if (check.isPresent() && !Objects.equals(check.get().getId(), id)) {
             throw new DuplicateException(String.format("User with id = %s already exist", id));
         }
