@@ -7,5 +7,6 @@ public class AuthenticationResponseDto {
 
     private String login;
     private String token;
+    private String refreshToken;
 
 }
