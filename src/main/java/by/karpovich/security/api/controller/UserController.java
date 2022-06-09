@@ -2,7 +2,6 @@ package by.karpovich.security.api.controller;
 
 import by.karpovich.security.api.dto.UserDto;
 import by.karpovich.security.api.dto.UserRegistryDto;
-import by.karpovich.security.jpa.model.User;
 import by.karpovich.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,13 +23,9 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> findById(@PathVariable(name = "id") Long id) {
-        UserDto user = userService.findById(id);
+        UserDto dto = userService.findById(id);
 
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping
@@ -38,7 +33,7 @@ public class UserController {
         List<UserDto> result = userService.findAll();
 
         if (result.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Nothing found for your request", HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -46,23 +41,29 @@ public class UserController {
 
     @ApiOperation(value = "Save user")
     @PostMapping(value = "/registration")
-    public ResponseEntity<?> registration(@RequestBody @Valid UserRegistryDto dto) {
-        User registration = userService.registration(dto);
-
-        if (registration == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> registration(@RequestPart("user") UserRegistryDto dto,
+                                          @RequestPart("image") MultipartFile file) {
+        userService.registration(dto, file);
 
         return new ResponseEntity<>("User saved successfully", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Update avatar user")
+    @PutMapping(value = "/updateAvatar/{id}")
+    public ResponseEntity<?> updateAvatar(@PathVariable("id") Long id,
+                                          @RequestPart("image") MultipartFile file) {
+        userService.updateAvatar(id, file);
+
+        return new ResponseEntity<>("User updated avatar successfully", HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Update by id user")
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody UserDto dto,
-                       @PathVariable("id") Long id) {
-        UserDto update = userService.update(id, dto);
+    public ResponseEntity<?> update(@RequestPart("user") UserRegistryDto dto,
+                                    @PathVariable("id") Long id) {
+        userService.update(id, dto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete by id user")

@@ -31,8 +31,10 @@ public class UserDto {
     @NotBlank(message = "Enter lastName")
     private String lastName;
 
-
     @ApiModelProperty(value = "Email", example = "", required = true, position = 5)
     @NotBlank(message = "Enter email")
     private String email;
+
+    @ApiModelProperty(value = "avatar", example = "", position = 6)
+    private String avatar;
 }

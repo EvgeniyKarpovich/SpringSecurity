@@ -13,8 +13,9 @@
             first_name varchar(30) NOT NULL,
             last_name varchar(30) NOT NULL,
             email varchar(30) NOT NULL,
-            password varchar(100) NOT NULL,
-            status varchar(30) NOT NULL,
+            password varchar(100) ,
+            status varchar(30) ,
+            avatar varchar(100) ,
             date_of_creation timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             date_of_change timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             CONSTRAINT ct_user UNIQUE(email)
