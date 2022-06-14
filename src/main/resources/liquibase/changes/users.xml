@@ -18,7 +18,8 @@
             avatar varchar(100),
             date_of_creation timestamp WITH time ZONE DEFAULT CURRENT_DATE,
             date_of_change timestamp WITH time ZONE DEFAULT CURRENT_DATE,
-            CONSTRAINT ct_user UNIQUE(login)
+            CONSTRAINT UQ_user_login UNIQUE(login),
+            CONSTRAINT UQ_user_email UNIQUE(email)
             );
         </sql>
     </changeSet>
