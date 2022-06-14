@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -49,7 +50,7 @@ public class UserController {
 
     @ApiOperation(value = "Save user")
     @PostMapping(value = "/registration")
-    public ResponseEntity<?> registration(@RequestPart("user") UserRegistryDto dto,
+    public ResponseEntity<?> registration(@RequestPart("user") @Valid UserRegistryDto dto,
                                           @RequestPart("image") MultipartFile file) {
         userService.registration(dto, file);
 
@@ -67,7 +68,7 @@ public class UserController {
 
     @ApiOperation(value = "Update by id user")
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestPart("user") UserRegistryDto dto,
+    public ResponseEntity<?> update(@RequestPart("user") @Valid UserRegistryDto dto,
                                     @PathVariable("id") Long id) {
         userService.update(id, dto);
 

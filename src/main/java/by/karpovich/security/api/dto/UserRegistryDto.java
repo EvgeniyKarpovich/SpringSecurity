@@ -1,5 +1,7 @@
 package by.karpovich.security.api.dto;
 
+import by.karpovich.security.api.validation.PasswordMatches;
+import by.karpovich.security.api.validation.ValidEmail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+@PasswordMatches
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,6 +30,9 @@ public class UserRegistryDto {
     @NotBlank(message = "Enter password")
     private String password;
 
+    @NotBlank(message = "Enter matchingPassword")
+    private String matchingPassword;
+
     @ApiModelProperty(value = "FirstName", example = "", required = true, position = 4)
     @NotBlank(message = "Enter firstName")
     private String firstName;
@@ -36,6 +42,7 @@ public class UserRegistryDto {
     private String lastName;
 
     @ApiModelProperty(value = "Email", example = "", required = true, position = 6)
+    @ValidEmail
     @NotBlank(message = "Enter email")
     private String email;
 
