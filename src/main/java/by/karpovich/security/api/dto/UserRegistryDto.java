@@ -30,8 +30,8 @@ public class UserRegistryDto {
     @NotBlank(message = "Enter password")
     private String password;
 
-    @NotBlank(message = "Enter matchingPassword")
-    private String matchingPassword;
+//    @NotBlank(message = "Enter matchingPassword")
+//    private String matchingPassword;
 
     @ApiModelProperty(value = "FirstName", example = "", required = true, position = 4)
     @NotBlank(message = "Enter firstName")

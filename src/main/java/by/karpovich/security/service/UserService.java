@@ -134,7 +134,7 @@ public class UserService {
     }
 
     public User findByLogin(String login) {
-       Optional<User> model = userRepository.findByLogin(login);
+        Optional<User> model = userRepository.findByLogin(login);
         User userModel = model.orElseThrow(
                 () -> new NotFoundModelException(String.format("User with login = %s not found", login)));
         log.info("IN findByLogin -  User with login = {} found", userModel.getLogin());
@@ -145,13 +145,6 @@ public class UserService {
         List<User> userModels = userRepository.findAll();
         log.info("IN findAll - the number of actors according to these criteria = {}", userModels.size());
         return userMapper.mapFromListEntity(userModels);
-    }
-
-    private void validateAlreadyExists(Long id, UserDto dto) {
-        Optional<User> check = userRepository.findByLogin(dto.getLogin());
-        if (check.isPresent() && !Objects.equals(check.get().getId(), id)) {
-            throw new DuplicateException(String.format("User with id = %s already exist", id));
-        }
     }
 
     public User getFullUser(Long id) {
