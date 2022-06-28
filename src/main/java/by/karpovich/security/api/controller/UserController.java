@@ -2,13 +2,13 @@ package by.karpovich.security.api.controller;
 
 import by.karpovich.security.api.dto.UserDto;
 import by.karpovich.security.api.dto.UserRegistryDto;
-import by.karpovich.security.jpa.model.User;
 import by.karpovich.security.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,11 +30,17 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/full/{id}")
-    public ResponseEntity<User> findB(@PathVariable(name = "id") Long id) {
-        User dto = userService.getFullUser(id);
 
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    @GetMapping(value = "/activate/{code}")
+    public ResponseEntity<?> activate(@PathVariable(name = "code") String code, Model model) {
+        boolean isActivated = userService.activatedUser(code);
+
+        if (isActivated) {
+            model.addAttribute("message", "User successfully activated");
+        } else {
+            model.addAttribute("message", "Activation Code is noy Found");
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping

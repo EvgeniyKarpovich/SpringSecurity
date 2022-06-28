@@ -48,5 +48,8 @@ public class UserRegistryDto {
 
     @ApiModelProperty(value = "avatar", example = "", position = 7)
     private String avatar;
+
+    @ApiModelProperty(value = "activationCode", example = "", position = 8)
+    private String activationCode;
 }
 

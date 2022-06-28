@@ -38,8 +38,11 @@ public class UserService {
     private UserMapper userMapper;
     @Value("${upload.path}")
     private String uploadPath;
+    @Autowired
+    private MailSender mailSender;
 
     public void registration(UserRegistryDto dto, MultipartFile file) {
+        validateAlreadyExistsRegistry(null, dto);
 
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
@@ -62,6 +65,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setRoles(userRoles);
         user.setAvatar(resultFileName);
+        user.setActivationCode(UUID.randomUUID().toString());
 
         User registeredUser = userRepository.save(user);
 
@@ -72,6 +76,13 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String message = String.format(
+                "Hello %s! \n" + "Congratulations on your successful registration, please, visit next link http://localhost:8080/users/activate/%s",
+                user.getLogin(),
+                user.getActivationCode()
+        );
+        mailSender.send(registeredUser.getEmail(), "Activation Code", message);
 
         log.info("IN registration - user: {} successfully registered", registeredUser);
     }
@@ -134,7 +145,7 @@ public class UserService {
     }
 
     public User findByLogin(String login) {
-       Optional<User> model = userRepository.findByLogin(login);
+        Optional<User> model = userRepository.findByLogin(login);
         User userModel = model.orElseThrow(
                 () -> new NotFoundModelException(String.format("User with login = %s not found", login)));
         log.info("IN findByLogin -  User with login = {} found", userModel.getLogin());
@@ -147,27 +158,22 @@ public class UserService {
         return userMapper.mapFromListEntity(userModels);
     }
 
-    private void validateAlreadyExists(Long id, UserDto dto) {
-        Optional<User> check = userRepository.findByLogin(dto.getLogin());
-        if (check.isPresent() && !Objects.equals(check.get().getId(), id)) {
-            throw new DuplicateException(String.format("User with id = %s already exist", id));
-        }
-    }
-
-    public User getFullUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        User userModel = user.orElseThrow(
-                () -> new NotFoundModelException(String.format("User with id = %s not found", id)));
-        log.info("IN findById -  User with id = {} found", userModel.getId());
-
-        return userModel;
-    }
-
     private void validateAlreadyExistsRegistry(Long id, UserRegistryDto dto) {
         Optional<User> check = userRepository.findByLogin(dto.getLogin());
         if (check.isPresent() && !Objects.equals(check.get().getId(), id)) {
             throw new DuplicateException(String.format("User with id = %s already exist", id));
         }
+    }
+
+    public boolean activatedUser(String code) {
+        User user = userRepository.findByActivationCode(code);
+
+        if (user == null) {
+            return false;
+        }
+        user.setActivationCode(null);
+        userRepository.save(user);
+        return true;
     }
 
 }
